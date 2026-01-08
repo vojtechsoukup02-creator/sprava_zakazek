@@ -14,6 +14,10 @@ input, select, button {
   padding: 6px;
 }
 
+button {
+  cursor: pointer;
+}
+
 li {
-  margin: 6px 0;
+  margin: 8px 0;
 }

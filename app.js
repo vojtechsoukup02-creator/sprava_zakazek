@@ -1,3 +1,4 @@
+
 class Location {
   constructor(name, address) {
     this.id = Date.now();
@@ -27,6 +28,7 @@ class Storage {
   }
 }
 
+
 const locations = Storage.load("locations");
 const jobs = Storage.load("jobs");
 
@@ -43,7 +45,11 @@ function renderLocations() {
 
   locations.forEach(l => {
     const li = document.createElement("li");
-    li.textContent = `${l.name} – ${l.address}`;
+    li.innerHTML = `
+      <b>${l.name}</b> – ${l.address}
+      <button onclick="editLocation(${l.id})">Upravit</button>
+      <button onclick="deleteLocation(${l.id})">Smazat</button>
+    `;
     locList.appendChild(li);
 
     const opt = document.createElement("option");
@@ -68,8 +74,10 @@ function renderJobs() {
       li.innerHTML = `
         <b>${j.type}</b> – ${j.description}<br>
         Lokalita: ${loc?.name || "?"}<br>
-        Stav: ${j.status}
+        Stav: ${j.status}<br>
         <button onclick="changeStatus(${j.id})">Změnit stav</button>
+        <button onclick="editJob(${j.id})">Upravit</button>
+        <button onclick="deleteJob(${j.id})">Smazat</button>
       `;
       jobList.appendChild(li);
     });
@@ -79,33 +87,74 @@ function renderJobs() {
 
 
 document.getElementById("addLocation").onclick = () => {
-  const name = locName.value;
-  const address = locAddress.value;
-  if (!name || !address) return;
-
-  locations.push(new Location(name, address));
+  if (!locName.value || !locAddress.value) return;
+  locations.push(new Location(locName.value, locAddress.value));
+  locName.value = "";
+  locAddress.value = "";
   renderLocations();
 };
 
 document.getElementById("addJob").onclick = () => {
-  if (!jobLocation.value) return;
-
-  jobs.push(
-    new Job(
-      Number(jobLocation.value),
-      jobType.value,
-      jobDesc.value
-    )
-  );
+  if (!jobLocation.value || !jobDesc.value) return;
+  jobs.push(new Job(
+    Number(jobLocation.value),
+    jobType.value,
+    jobDesc.value
+  ));
+  jobDesc.value = "";
   renderJobs();
 };
 
 filterType.onchange = renderJobs;
 
+
+window.editLocation = id => {
+  const loc = locations.find(l => l.id === id);
+  const name = prompt("Nový název:", loc.name);
+  const address = prompt("Nová adresa:", loc.address);
+
+  if (name && address) {
+    loc.name = name;
+    loc.address = address;
+    renderLocations();
+    renderJobs();
+  }
+};
+
+window.deleteLocation = id => {
+  if (!confirm("Smazat lokalitu včetně zakázek?")) return;
+
+  locations.splice(locations.findIndex(l => l.id === id), 1);
+  for (let i = jobs.length - 1; i >= 0; i--) {
+    if (jobs[i].locationId === id) jobs.splice(i, 1);
+  }
+
+  renderLocations();
+  renderJobs();
+};
+
 window.changeStatus = id => {
   const job = jobs.find(j => j.id === id);
   const states = ["plánováno", "rozpracováno", "dokončeno"];
   job.status = states[(states.indexOf(job.status) + 1) % states.length];
+  renderJobs();
+};
+
+window.editJob = id => {
+  const job = jobs.find(j => j.id === id);
+  const desc = prompt("Popis:", job.description);
+  const type = prompt("Typ (topení/voda/plyn):", job.type);
+
+  if (desc && type) {
+    job.description = desc;
+    job.type = type;
+    renderJobs();
+  }
+};
+
+window.deleteJob = id => {
+  if (!confirm("Smazat zakázku?")) return;
+  jobs.splice(jobs.findIndex(j => j.id === id), 1);
   renderJobs();
 };
 
