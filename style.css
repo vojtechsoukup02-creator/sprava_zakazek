@@ -1,0 +1,19 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+section {
+  margin-bottom: 25px;
+  padding: 15px;
+  border: 1px solid #ccc;
+}
+
+input, select, button {
+  margin: 5px;
+  padding: 6px;
+}
+
+li {
+  margin: 6px 0;
+}
