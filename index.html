@@ -3,6 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <title>Správa zakázek a lokalit</title>
+
+ 
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -11,14 +18,20 @@
 
 <section>
   <h2>Přidat lokalitu</h2>
+  <p>1. Klikněte na mapu pro výběr umístění</p>
+  <p>2. Zadejte název lokality</p>
   <input id="locName" placeholder="Název lokality">
-  <input id="locAddress" placeholder="Adresa">
-  <button id="addLocation">Přidat</button>
+  <button id="addLocation">Přidat lokalitu</button>
 </section>
 
 <section>
   <h2>Lokality</h2>
   <ul id="locations"></ul>
+</section>
+
+<section>
+  <h2>Mapa - klikněte pro výběr lokality</h2>
+  <div id="map"></div>
 </section>
 
 <section>
@@ -48,6 +61,9 @@
   <ul id="jobs"></ul>
 </section>
 
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>
