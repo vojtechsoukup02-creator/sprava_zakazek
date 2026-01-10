@@ -4,12 +4,10 @@
   <meta charset="UTF-8" />
   <title>Správa zakázek a lokalit</title>
 
- 
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   />
-
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -30,19 +28,24 @@
 </section>
 
 <section>
-  <h2>Mapa - klikněte pro výběr lokality</h2>
+  <h2>Mapa – klikněte pro výběr lokality</h2>
   <div id="map"></div>
 </section>
 
 <section>
   <h2>Přidat zakázku</h2>
+
   <select id="jobLocation"></select>
+
   <select id="jobType">
     <option value="topení">Topení</option>
     <option value="voda">Voda</option>
     <option value="plyn">Plyn</option>
   </select>
-  <input id="jobDesc" placeholder="Popis práce">
+
+  <input id="jobTitle" placeholder="Krátký popis (např. Výměna kotle)">
+  <input id="jobDesc" placeholder="Detailní popis práce">
+
   <button id="addJob">Přidat zakázku</button>
 </section>
 
@@ -60,7 +63,6 @@
   <h2>Zakázky</h2>
   <ul id="jobs"></ul>
 </section>
-
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="app.js"></script>
