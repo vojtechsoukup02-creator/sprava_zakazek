@@ -79,12 +79,21 @@ function renderLocations() {
 
   locations.forEach(l => {
     const li = document.createElement("li");
+    li.classList.add("accordion");
+
     li.innerHTML = `
-      <b>${l.name}</b><br>
-      Souřadnice: ${Number(l.lat).toFixed(5)}, ${Number(l.lon).toFixed(5)}<br>
-      <button onclick="editLocation('${l.id}')">Upravit</button>
-      <button onclick="deleteLocation('${l.id}')">Smazat</button>
+      <div class="accordion-header">
+        ${l.name}
+        <span class="accordion-toggle">▼</span>
+      </div>
+
+      <div class="accordion-content">
+        Souřadnice: ${l.lat.toFixed(5)}, ${l.lon.toFixed(5)}<br>
+        <button onclick="editLocation('${l.id}')">Upravit</button>
+        <button onclick="deleteLocation('${l.id}')">Smazat</button>
+      </div>
     `;
+
     locList.appendChild(li);
 
     const opt = document.createElement("option");
@@ -95,6 +104,7 @@ function renderLocations() {
 
   Storage.save("locations", locations);
   renderMap();
+  bindAccordions();
 }
 
 function renderJobs() {
@@ -107,19 +117,39 @@ function renderJobs() {
       const loc = locations.find(l => l.id === j.locationId);
 
       const li = document.createElement("li");
+      li.classList.add("accordion");
+
       li.innerHTML = `
-        <b>${j.title}</b> <small>(${j.type})</small><br>
-        ${j.description}<br>
-        Lokalita: ${loc?.name || "?"}<br>
-        Stav: ${j.status}<br>
-        <button onclick="changeStatus('${j.id}')">Změnit stav</button>
-        <button onclick="editJob('${j.id}')">Upravit</button>
-        <button onclick="deleteJob('${j.id}')">Smazat</button>
+      <div class="accordion-header">
+        ${j.title} (${j.type}) – ${loc?.name || "?"}
+        <span class="accordion-toggle">▼</span>
+        </div>
+
+        <div class="accordion-content">
+          ${j.description}<br>
+          Lokalita: ${loc?.name || "?"}<br>
+          Stav: ${j.status}<br><br>
+
+          <button onclick="changeStatus('${j.id}')">Změnit stav</button>
+          <button onclick="editJob('${j.id}')">Upravit</button>
+          <button onclick="deleteJob('${j.id}')">Smazat</button>
+        </div>
       `;
+
       jobList.appendChild(li);
     });
 
   Storage.save("jobs", jobs);
+  bindAccordions();
+}
+
+/* ===== ACCORDION BIND ===== */
+function bindAccordions() {
+  document.querySelectorAll(".accordion-header").forEach(header => {
+    header.onclick = () => {
+      header.parentElement.classList.toggle("open");
+    };
+  });
 }
 
 /* ===== MAP POPUP WITH JOBS ===== */
@@ -130,17 +160,11 @@ function buildLocationPopup(location) {
     return `<b>${location.name}</b><br>Žádné zakázky`;
   }
 
-  const jobListHtml = locationJobs
-    .map(
-      j =>
-        `• <b>${j.title}</b> (${j.type}) – <i>${j.status}</i>`
-    )
-    .join("<br>");
-
   return `
-    <b>${location.name}</b><br>
-    <hr>
-    ${jobListHtml}
+    <b>${location.name}</b><hr>
+    ${locationJobs
+      .map(j => `• <b>${j.title}</b> (${j.type}) – <i>${j.status}</i>`)
+      .join("<br>")}
   `;
 }
 
@@ -205,7 +229,7 @@ document.getElementById("addJob").onclick = () => {
   jobType.value = "";
 
   renderJobs();
-  renderMap(); 
+  renderMap();
 };
 
 filterType.onchange = renderJobs;
@@ -238,6 +262,7 @@ window.changeStatus = id => {
 
   const states = ["plánováno", "rozpracováno", "dokončeno"];
   job.status = states[(states.indexOf(job.status) + 1) % states.length];
+
   renderJobs();
   renderMap();
 };
@@ -254,6 +279,7 @@ window.editJob = id => {
 
   job.title = title.trim();
   job.description = desc.trim();
+
   renderJobs();
   renderMap();
 };
