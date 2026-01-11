@@ -88,6 +88,30 @@ button:hover {
   border: 1px solid #ccc;
 }
 
+.accordion.editing .accordion-content {
+  display: block;
+  padding-top: 12px;
+}
+
+
+.accordion.editing textarea {
+  min-height: 200px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+
+.accordion.editing {
+  background: #e9f1ff;
+  border-left: 4px solid #4c8bf5;
+}
+
+
+.accordion.editing input,
+.accordion.editing textarea {
+  margin-bottom: 10px;
+}
+
 @media (min-width: 768px) {
   body {
     max-width: 960px;
